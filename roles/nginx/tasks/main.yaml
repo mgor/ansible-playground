@@ -1,0 +1,40 @@
+---
+- name: Add nginx repositor
+  apt_repository:
+    repo: ppa:nginx/stable
+    state: present
+
+- name: Install nginx
+  apt:
+    pkg: nginx
+    state: latest
+    update_cache: true
+  notify:
+    - Start nginx
+
+- name: Add H5BP configuration
+  copy:
+    src: h5bp
+    dest: /etc/nginx
+    owner: root
+    group: root
+
+- name: Disable default configuration
+  file:
+    dest: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Add site config
+  template:
+    src: example.com.j2
+    dest: /etc/nginx/sites-available/{{ domain }}
+    owner: root
+    group: root
+
+- name: Enable site config
+  file:
+    src: /etc/nginx/sites-available/{{ domain }}
+    dest: /etc/nginx/sites-enabled/{{ domain }}
+    state: link
+  notify:
+    - Reload nginx

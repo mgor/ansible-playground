@@ -1,0 +1,27 @@
+---
+ - hosts: web
+   become: true
+   user: ubuntu
+   tasks:
+    - name: Add nginx repository
+      apt_repository:
+        repo: ppa:nginx/stable
+        state: present
+      register: ppainstalled
+
+    - name: Install nginx
+      apt: 
+        name: nginx
+        state: latest
+        update_cache: true
+      when: ppainstalled is succeeded
+      notify:
+        - Start nginx
+
+   handlers:
+    - name: Start nginx
+      service: 
+        name: nginx
+        state: started
+
+   

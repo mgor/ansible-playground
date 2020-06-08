@@ -1,0 +1,23 @@
+---
+ - hosts: web
+   become: true
+   user: ubuntu
+   tasks:
+    - name: Stop nginx
+      service:
+        name: nginx
+        state: stopped
+      register: servicestopped
+    
+    - name: Uninstall nginx
+      apt: 
+        name: ['nginx', 'nginx-full', 'nginx-common']
+        state: absent
+      when: servicestopped is succeeded
+      register: packageuninstalled
+
+    - name: Remove nginx repository
+      apt_repository:
+        repo: ppa:nginx/stable
+        state: absent
+      when: packageuninstalled is succeeded
