@@ -9,7 +9,7 @@
   user:
     name: admin
     uid: 1337
-    password: "{{ admin_password }}"
+    password: "{{ user_password | password_hash('sha512') }}"
     group: admin
     groups: sudo
     shell: /bin/bash
@@ -31,7 +31,7 @@
   user:
     name: deploy
     uid: 1338
-    password: "{{ deploy_password }}"
+    password: "{{ user_password | password_hash('sha512') }}"
     group: deploy
     groups: www-data
     shell: /bin/false

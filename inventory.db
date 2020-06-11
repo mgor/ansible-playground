@@ -1,0 +1,11 @@
+[controller]
+ansible00
+
+[web:vars]
+ansible_connection=ssh
+#ansible_user=admin
+#ansible_become_pass='{{ admin_become_password }}'
+
+[web]
+ansible01
+ansible02
