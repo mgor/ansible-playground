@@ -1,0 +1,44 @@
+---
+- name: Create admin group
+  group:
+    name: admin
+    gid: 1337
+    state: present
+
+- name: Create admin user
+  user:
+    name: admin
+    uid: 1337
+    password: "{{ admin_password }}"
+    group: admin
+    groups: sudo
+    shell: /bin/bash
+    state: present
+
+- name: Add admin authorized key
+  authorized_key:
+    user: admin
+    key: "{{ shared_publickey }}"
+    state: present
+
+- name: Create deploy group
+  group:
+    name: deploy
+    gid: 1338
+    state: present
+
+- name: Create deploy user
+  user:
+    name: deploy
+    uid: 1338
+    password: "{{ deploy_password }}"
+    group: deploy
+    groups: www-data
+    shell: /bin/false
+    state: present
+
+- name: Add deploy authorized key
+  authorized_key:
+    user: deploy
+    key: "{{ shared_publickey }}"
+    state: present
